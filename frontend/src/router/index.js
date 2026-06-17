@@ -8,6 +8,7 @@ import Register from '../views/user/Register.vue'
 import ItemDetail from '../views/user/ItemDetail.vue'
 import ItemForm from '../views/user/ItemForm.vue'
 import MyItems from '../views/user/MyItems.vue'
+import Favorites from '../views/user/Favorites.vue'
 import Orders from '../views/user/Orders.vue'
 import Profile from '../views/user/Profile.vue'
 import AdminLogin from '../views/admin/AdminLogin.vue'
@@ -32,6 +33,7 @@ const router = createRouter({
         { path: 'publish', component: ItemForm, meta: { requiresAuth: true, role: 'USER' } },
         { path: 'items/:id/edit', component: ItemForm, meta: { requiresAuth: true, role: 'USER' } },
         { path: 'mine/items', component: MyItems, meta: { requiresAuth: true, role: 'USER' } },
+        { path: 'mine/favorites', component: Favorites, meta: { requiresAuth: true, role: 'USER' } },
         { path: 'orders', component: Orders, meta: { requiresAuth: true, role: 'USER' } },
         { path: 'profile', component: Profile, meta: { requiresAuth: true, role: 'USER' } }
       ]

@@ -17,6 +17,7 @@ import org.springframework.util.StringUtils;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -105,6 +106,18 @@ public class ItemServiceImpl implements ItemService {
                         .eq(Item::getSellerId, AuthContext.userId())
                         .orderByDesc(Item::getCreatedAt))
                 .stream().map(this::toView).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Views.ItemView> favorites() {
+        return favoriteMapper.selectList(new LambdaQueryWrapper<Favorite>()
+                        .eq(Favorite::getUserId, AuthContext.userId())
+                        .orderByDesc(Favorite::getCreatedAt))
+                .stream()
+                .map(f -> itemMapper.selectById(f.getItemId()))
+                .filter(Objects::nonNull)
+                .map(this::toView)
+                .collect(Collectors.toList());
     }
 
     @Override

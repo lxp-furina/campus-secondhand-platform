@@ -16,6 +16,7 @@ public interface ItemService {
     Page<Views.ItemView> page(Long categoryId, String keyword, String status, long current, long size);
     Views.ItemView detail(Long id);
     List<Views.ItemView> mine();
+    List<Views.ItemView> favorites();
     void favorite(Long id);
     void unfavorite(Long id);
 }

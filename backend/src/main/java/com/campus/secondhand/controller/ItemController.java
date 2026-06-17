@@ -70,6 +70,11 @@ public class ItemController {
         return Result.ok(itemService.mine());
     }
 
+    @GetMapping("/items/favorites")
+    public Result<List<Views.ItemView>> favorites() {
+        return Result.ok(itemService.favorites());
+    }
+
     @PostMapping("/items/{id}/favorite")
     public Result<Void> favorite(@PathVariable Long id) {
         itemService.favorite(id);

@@ -4,6 +4,7 @@
       <el-menu-item index="/">校园闲置</el-menu-item>
       <el-menu-item index="/publish">发布物品</el-menu-item>
       <el-menu-item index="/mine/items">我的发布</el-menu-item>
+      <el-menu-item index="/mine/favorites">我的收藏</el-menu-item>
       <el-menu-item index="/orders">我的订单</el-menu-item>
       <el-menu-item index="/profile">个人中心</el-menu-item>
       <div class="spacer"></div>

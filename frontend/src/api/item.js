@@ -9,6 +9,7 @@ export const updateItem = (id, data) => request.put(`/api/items/${id}`, data)
 export const offShelfItem = (id) => request.put(`/api/items/${id}/off-shelf`)
 export const adminOffShelfItem = (id) => request.put(`/api/admin/items/${id}/off-shelf`)
 export const getMyItems = () => request.get('/api/items/mine')
+export const getMyFavorites = () => request.get('/api/items/favorites')
 export const favoriteItem = (id) => request.post(`/api/items/${id}/favorite`)
 export const unfavoriteItem = (id) => request.delete(`/api/items/${id}/favorite`)
 export const uploadFile = (file) => {
