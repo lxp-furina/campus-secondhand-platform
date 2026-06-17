@@ -20,19 +20,20 @@ import ReportManage from '../views/admin/ReportManage.vue'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
+    { path: '/login', component: Login },
+    { path: '/register', component: Register },
     {
       path: '/',
       component: UserLayout,
+      meta: { requiresAuth: true, role: 'USER' },
       children: [
         { path: '', component: Home },
-        { path: 'login', component: Login },
-        { path: 'register', component: Register },
         { path: 'items/:id', component: ItemDetail },
         { path: 'publish', component: ItemForm, meta: { requiresAuth: true, role: 'USER' } },
         { path: 'items/:id/edit', component: ItemForm, meta: { requiresAuth: true, role: 'USER' } },
         { path: 'mine/items', component: MyItems, meta: { requiresAuth: true, role: 'USER' } },
         { path: 'orders', component: Orders, meta: { requiresAuth: true, role: 'USER' } },
-        { path: 'profile', component: Profile, meta: { requiresAuth: true } }
+        { path: 'profile', component: Profile, meta: { requiresAuth: true, role: 'USER' } }
       ]
     },
     { path: '/admin/login', component: AdminLogin },
@@ -54,6 +55,12 @@ const router = createRouter({
 
 router.beforeEach((to) => {
   const auth = useAuthStore()
+  if ((to.path === '/login' || to.path === '/register') && auth.isLogin) {
+    return auth.role === 'ADMIN' ? '/admin/dashboard' : '/'
+  }
+  if (to.path === '/admin/login' && auth.isLogin && auth.role === 'ADMIN') {
+    return '/admin/dashboard'
+  }
   if (to.meta.requiresAuth && !auth.isLogin) {
     return to.path.startsWith('/admin') ? '/admin/login' : '/login'
   }
