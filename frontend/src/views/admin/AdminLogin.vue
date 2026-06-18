@@ -1,5 +1,6 @@
 <template>
-  <div class="admin-login">
+  <PageScene variant="auth">
+    <div class="admin-login">
     <div class="login-visual">
       <img src="../../assets/images/hero-bg.png" alt="" class="visual-bg" />
       <div class="visual-overlay"></div>
@@ -24,7 +25,8 @@
         </el-form>
       </div>
     </div>
-  </div>
+    </div>
+  </PageScene>
 </template>
 
 <script setup>
@@ -32,6 +34,7 @@ import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { adminLogin } from '../../api/auth'
 import { useAuthStore } from '../../store/auth'
+import PageScene from '../../components/PageScene.vue'
 
 const formRef = ref()
 const form = reactive({ account: 'admin', password: 'admin123' })

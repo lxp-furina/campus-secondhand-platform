@@ -34,7 +34,9 @@
     </header>
 
     <main class="site-main">
-      <router-view />
+      <PageScene>
+        <router-view />
+      </PageScene>
     </main>
 
     <footer class="site-footer">
@@ -52,6 +54,7 @@
 <script setup>
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../store/auth'
+import PageScene from './PageScene.vue'
 
 const auth = useAuthStore()
 const router = useRouter()
@@ -260,6 +263,7 @@ function logout() {
 /* ─── Main ─── */
 .site-main {
   flex: 1;
+  position: relative;
 }
 
 /* ─── Footer ─── */

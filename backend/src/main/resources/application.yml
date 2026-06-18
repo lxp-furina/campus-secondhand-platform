@@ -5,6 +5,8 @@ server:
 spring:
   application:
     name: campus-secondhand
+  profiles:
+    active: local
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/campus_secondhand?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
@@ -38,3 +40,9 @@ campus:
     url-prefix: /uploads/
   cors:
     allowed-origins: "*"
+  ai:
+    enabled: true
+    api-key: ${DASHSCOPE_API_KEY:}
+    base-url: https://dashscope.aliyuncs.com/compatible-mode/v1
+    model: qwen-turbo
+    timeout-ms: 15000

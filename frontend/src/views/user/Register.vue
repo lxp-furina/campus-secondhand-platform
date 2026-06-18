@@ -1,5 +1,6 @@
 <template>
-  <div class="auth-page">
+  <PageScene variant="auth">
+    <div class="auth-page">
     <div class="auth-visual">
       <div class="auth-visual-content">
         <img src="../../assets/images/brand-mark.png" alt="" class="brand-mark" />
@@ -41,7 +42,8 @@
         </el-form>
       </div>
     </div>
-  </div>
+    </div>
+  </PageScene>
 </template>
 
 <script setup>
@@ -49,6 +51,7 @@ import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { register } from '../../api/auth'
 import { useAuthStore } from '../../store/auth'
+import PageScene from '../../components/PageScene.vue'
 
 const formRef = ref()
 const form = reactive({ studentNo: '', username: '', password: '', phone: '', email: '' })

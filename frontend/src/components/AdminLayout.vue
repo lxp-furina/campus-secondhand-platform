@@ -28,7 +28,9 @@
     </aside>
 
     <main class="main">
-      <router-view />
+      <PageScene tone="admin">
+        <router-view />
+      </PageScene>
     </main>
   </div>
 </template>
@@ -36,6 +38,7 @@
 <script setup>
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../store/auth'
+import PageScene from './PageScene.vue'
 
 const auth = useAuthStore()
 const router = useRouter()
@@ -180,9 +183,7 @@ function logout() {
 .main {
   flex: 1;
   padding: 32px;
-  background: var(--color-ivory);
-  background-image:
-    radial-gradient(ellipse 60% 40% at 80% 0%, rgba(184, 149, 106, 0.06) 0%, transparent 50%);
   overflow-y: auto;
+  position: relative;
 }
 </style>

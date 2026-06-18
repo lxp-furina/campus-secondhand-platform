@@ -145,5 +145,6 @@ vite.config.ts.timestamp-*
 # Java build output
 target/
 
-# Local upload storage
-uploads/
+# Local Spring profile with secrets (copy from application-local.yml.example)
+backend/src/main/resources/application-local.yml
+

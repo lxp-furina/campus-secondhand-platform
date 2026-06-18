@@ -9,7 +9,9 @@ public final class Constants {
     public static final String USER_ENABLED = "ENABLED";
     public static final String USER_DISABLED = "DISABLED";
 
+    public static final String ITEM_PENDING_REVIEW = "PENDING_REVIEW";
     public static final String ITEM_ON_SALE = "ON_SALE";
+    public static final String ITEM_REJECTED = "REJECTED";
     public static final String ITEM_OFF_SHELF = "OFF_SHELF";
     public static final String ITEM_SOLD = "SOLD";
 

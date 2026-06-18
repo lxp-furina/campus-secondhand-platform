@@ -22,11 +22,27 @@
             <span class="price-sm">{{ row.item.price }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="状态" prop="item.status" width="100" />
+        <el-table-column label="状态" width="120">
+          <template #default="{ row }">
+            <el-tag :type="statusType(row.item.status)" effect="plain">{{ statusText(row.item.status) }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="审核说明" min-width="180">
+          <template #default="{ row }">
+            <span v-if="row.item.status === 'REJECTED'" class="reject-reason">{{ row.item.rejectReason || '内容不符合规范' }}</span>
+            <span v-else class="muted">—</span>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="200">
           <template #default="{ row }">
-            <el-button size="small" @click="$router.push(`/items/${row.item.id}/edit`)">编辑</el-button>
-            <el-button size="small" type="warning" @click="off(row.item.id)">下架</el-button>
+            <el-button
+              v-if="['ON_SALE', 'REJECTED'].includes(row.item.status)"
+              size="small"
+              @click="$router.push(`/items/${row.item.id}/edit`)"
+            >
+              编辑
+            </el-button>
+            <el-button v-if="row.item.status === 'ON_SALE'" size="small" type="warning" @click="off(row.item.id)">下架</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -40,6 +56,30 @@ import { getMyItems, offShelfItem } from '../../api/item'
 
 const placeholder = 'https://dummyimage.com/120/ede6d8/6b7c72&text=Item'
 const items = ref([])
+
+const statusMap = {
+  PENDING_REVIEW: '审核中',
+  ON_SALE: '在售',
+  REJECTED: '审核未通过',
+  OFF_SHELF: '已下架',
+  SOLD: '已售出'
+}
+
+const statusTypeMap = {
+  PENDING_REVIEW: 'warning',
+  ON_SALE: 'success',
+  REJECTED: 'danger',
+  OFF_SHELF: 'info',
+  SOLD: 'info'
+}
+
+function statusText(status) {
+  return statusMap[status] || status
+}
+
+function statusType(status) {
+  return statusTypeMap[status] || 'info'
+}
 
 async function load() {
   items.value = await getMyItems()
@@ -80,5 +120,11 @@ onMounted(load)
 .price-sm::before {
   content: '¥';
   font-size: 0.85em;
+}
+
+.reject-reason {
+  color: var(--color-burgundy);
+  font-size: 0.9rem;
+  line-height: 1.4;
 }
 </style>

@@ -41,8 +41,8 @@
                   <el-option label="正常使用" value="正常使用" />
                 </el-select>
               </el-form-item>
-              <el-button type="primary" size="large" style="width: 100%; margin-top: 12px" @click="submit">
-                {{ isEdit ? '保存修改' : '发布物品' }}
+              <el-button type="primary" size="large" style="width: 100%; margin-top: 12px" :loading="submitting" @click="submit">
+                {{ submitting ? 'AI 审核中…' : (isEdit ? '保存修改' : '发布物品') }}
               </el-button>
             </div>
           </el-col>
@@ -55,12 +55,14 @@
 <script setup>
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
 import { createItem, getCategories, getItemDetail, updateItem, uploadFile } from '../../api/item'
 
 const route = useRoute()
 const router = useRouter()
 const isEdit = computed(() => !!route.params.id)
 const formRef = ref()
+const submitting = ref(false)
 const categories = ref([])
 const fileList = ref([])
 const form = reactive({ title: '', categoryId: null, description: '', price: 1, conditionLevel: '九成新', imageUrls: [] })
@@ -86,9 +88,15 @@ function removeImage(file) {
 
 async function submit() {
   await formRef.value.validate()
-  if (isEdit.value) await updateItem(route.params.id, form)
-  else await createItem(form)
-  router.push('/mine/items')
+  submitting.value = true
+  try {
+    if (isEdit.value) await updateItem(route.params.id, form, { timeout: 30000 })
+    else await createItem(form, { timeout: 30000 })
+    ElMessage.success(isEdit.value ? '修改成功，商品已上架' : '发布成功，商品已通过 AI 审核并上架')
+    router.push('/mine/items')
+  } finally {
+    submitting.value = false
+  }
 }
 
 onMounted(async () => {

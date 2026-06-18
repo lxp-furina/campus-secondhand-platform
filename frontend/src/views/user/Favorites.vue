@@ -43,7 +43,9 @@ const placeholder = 'https://dummyimage.com/600x400/ede6d8/6b7c72&text=Campus+At
 const items = ref([])
 
 const statusMap = {
+  PENDING_REVIEW: '审核中',
   ON_SALE: '在售',
+  REJECTED: '审核未通过',
   OFF_SHELF: '已下架',
   SOLD: '已售出'
 }

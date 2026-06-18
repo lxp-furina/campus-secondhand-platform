@@ -21,4 +21,5 @@ public class Item extends BaseEntity {
     private BigDecimal price;
     private String conditionLevel;
     private String status;
+    private String rejectReason;
 }

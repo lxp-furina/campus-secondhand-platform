@@ -8,7 +8,9 @@
       <div class="toolbar">
       <el-input v-model="query.keyword" placeholder="标题/描述" clearable style="width: 240px" />
       <el-select v-model="query.status" clearable placeholder="状态" style="width: 160px">
+        <el-option label="待审核" value="PENDING_REVIEW" />
         <el-option label="上架" value="ON_SALE" />
+        <el-option label="审核未通过" value="REJECTED" />
         <el-option label="下架" value="OFF_SHELF" />
         <el-option label="已售出" value="SOLD" />
       </el-select>
@@ -21,6 +23,7 @@
       <el-table-column prop="seller.username" label="卖家" />
       <el-table-column prop="item.price" label="价格" />
       <el-table-column prop="item.status" label="状态" />
+      <el-table-column prop="item.rejectReason" label="审核说明" min-width="180" />
       <el-table-column label="操作" width="160">
         <template #default="{ row }">
           <el-button v-if="row.item.status === 'ON_SALE'" type="danger" size="small" @click="off(row.item.id)">违规下架</el-button>

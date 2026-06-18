@@ -35,12 +35,13 @@ CREATE TABLE items (
   price DECIMAL(10,2) NOT NULL,
   condition_level VARCHAR(32) NOT NULL,
   status VARCHAR(20) NOT NULL DEFAULT 'ON_SALE',
+  reject_reason VARCHAR(500),
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   CONSTRAINT fk_items_seller FOREIGN KEY (seller_id) REFERENCES users(id),
   CONSTRAINT fk_items_category FOREIGN KEY (category_id) REFERENCES categories(id),
   CONSTRAINT ck_items_price CHECK (price > 0),
-  CONSTRAINT ck_items_status CHECK (status IN ('ON_SALE','OFF_SHELF','SOLD'))
+  CONSTRAINT ck_items_status CHECK (status IN ('PENDING_REVIEW','ON_SALE','REJECTED','OFF_SHELF','SOLD'))
 ) ENGINE=InnoDB;
 
 CREATE TABLE item_images (

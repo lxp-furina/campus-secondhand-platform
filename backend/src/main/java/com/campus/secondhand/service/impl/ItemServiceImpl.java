@@ -4,10 +4,12 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.campus.secondhand.common.Constants;
 import com.campus.secondhand.dto.Requests;
+import com.campus.secondhand.dto.ReviewResult;
 import com.campus.secondhand.dto.Views;
 import com.campus.secondhand.entity.*;
 import com.campus.secondhand.exception.BizException;
 import com.campus.secondhand.mapper.*;
+import com.campus.secondhand.service.AiReviewService;
 import com.campus.secondhand.service.ItemService;
 import com.campus.secondhand.utils.AuthContext;
 import org.springframework.beans.BeanUtils;
@@ -27,14 +29,16 @@ public class ItemServiceImpl implements ItemService {
     private final CategoryMapper categoryMapper;
     private final UserMapper userMapper;
     private final FavoriteMapper favoriteMapper;
+    private final AiReviewService aiReviewService;
 
     public ItemServiceImpl(ItemMapper itemMapper, ItemImageMapper imageMapper, CategoryMapper categoryMapper,
-                           UserMapper userMapper, FavoriteMapper favoriteMapper) {
+                           UserMapper userMapper, FavoriteMapper favoriteMapper, AiReviewService aiReviewService) {
         this.itemMapper = itemMapper;
         this.imageMapper = imageMapper;
         this.categoryMapper = categoryMapper;
         this.userMapper = userMapper;
         this.favoriteMapper = favoriteMapper;
+        this.aiReviewService = aiReviewService;
     }
 
     @Override
@@ -43,31 +47,41 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    @Transactional
+    @Transactional(noRollbackFor = BizException.class)
     public Item create(Requests.ItemSave request) {
-        if (categoryMapper.selectById(request.getCategoryId()) == null) {
+        Category category = categoryMapper.selectById(request.getCategoryId());
+        if (category == null) {
             throw new BizException("分类不存在");
         }
         Item item = new Item();
         BeanUtils.copyProperties(request, item);
         item.setSellerId(AuthContext.userId());
-        item.setStatus(Constants.ITEM_ON_SALE);
+        item.setStatus(Constants.ITEM_PENDING_REVIEW);
+        item.setRejectReason(null);
         itemMapper.insert(item);
         saveImages(item.getId(), request.getImageUrls());
+        applyReviewResult(item, category.getName(), reviewItem(item, category.getName()));
         return item;
     }
 
     @Override
-    @Transactional
+    @Transactional(noRollbackFor = BizException.class)
     public Item update(Long id, Requests.ItemSave request) {
         Item item = requireOwnerItem(id);
-        if (!Constants.ITEM_ON_SALE.equals(item.getStatus())) {
-            throw new BizException("仅上架中的物品可编辑");
+        if (!Constants.ITEM_ON_SALE.equals(item.getStatus()) && !Constants.ITEM_REJECTED.equals(item.getStatus())) {
+            throw new BizException("仅上架中或审核未通过的物品可编辑");
+        }
+        Category category = categoryMapper.selectById(request.getCategoryId());
+        if (category == null) {
+            throw new BizException("分类不存在");
         }
         BeanUtils.copyProperties(request, item);
+        item.setStatus(Constants.ITEM_PENDING_REVIEW);
+        item.setRejectReason(null);
         itemMapper.updateById(item);
         imageMapper.delete(new LambdaQueryWrapper<ItemImage>().eq(ItemImage::getItemId, id));
         saveImages(id, request.getImageUrls());
+        applyReviewResult(item, category.getName(), reviewItem(item, category.getName()));
         return item;
     }
 
@@ -142,6 +156,24 @@ public class ItemServiceImpl implements ItemService {
         favoriteMapper.delete(new LambdaQueryWrapper<Favorite>()
                 .eq(Favorite::getUserId, AuthContext.userId())
                 .eq(Favorite::getItemId, id));
+    }
+
+    private ReviewResult reviewItem(Item item, String categoryName) {
+        return aiReviewService.review(item.getTitle(), item.getDescription(), categoryName);
+    }
+
+    private void applyReviewResult(Item item, String categoryName, ReviewResult result) {
+        if (result.isPass()) {
+            item.setStatus(Constants.ITEM_ON_SALE);
+            item.setRejectReason(null);
+        } else {
+            item.setStatus(Constants.ITEM_REJECTED);
+            item.setRejectReason(result.getReason());
+        }
+        itemMapper.updateById(item);
+        if (!result.isPass()) {
+            throw new BizException(400, "AI审核未通过：" + result.getReason());
+        }
     }
 
     private Item requireOwnerItem(Long id) {
