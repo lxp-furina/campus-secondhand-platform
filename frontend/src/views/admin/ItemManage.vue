@@ -1,7 +1,11 @@
 <template>
-  <div>
-    <h2>物品管理</h2>
-    <div class="toolbar">
+  <div class="admin-page">
+    <div class="page-header">
+      <h2>物品管理</h2>
+      <p class="page-subtitle">审核与管理平台物品</p>
+    </div>
+    <el-card>
+      <div class="toolbar">
       <el-input v-model="query.keyword" placeholder="标题/描述" clearable style="width: 240px" />
       <el-select v-model="query.status" clearable placeholder="状态" style="width: 160px">
         <el-option label="上架" value="ON_SALE" />
@@ -9,8 +13,8 @@
         <el-option label="已售出" value="SOLD" />
       </el-select>
       <el-button type="primary" @click="load">查询</el-button>
-    </div>
-    <el-table :data="items">
+      </div>
+      <el-table :data="items" stripe>
       <el-table-column prop="item.id" label="ID" width="80" />
       <el-table-column prop="item.title" label="标题" />
       <el-table-column prop="category.name" label="分类" />
@@ -22,8 +26,9 @@
           <el-button v-if="row.item.status === 'ON_SALE'" type="danger" size="small" @click="off(row.item.id)">违规下架</el-button>
         </template>
       </el-table-column>
-    </el-table>
-    <el-pagination class="pager" layout="prev, pager, next" :total="total" v-model:current-page="query.current" :page-size="query.size" @current-change="load" />
+      </el-table>
+      <el-pagination class="pager" layout="prev, pager, next" :total="total" :current-page="query.current" :page-size="query.size" @current-change="onPageChange" />
+    </el-card>
   </div>
 </template>
 
@@ -40,6 +45,10 @@ async function load() {
   items.value = page.records || []
   total.value = page.total || 0
 }
+function onPageChange(page) {
+  query.current = page
+  load()
+}
 async function off(id) {
   await adminOffShelfItem(id)
   await load()
@@ -48,7 +57,12 @@ onMounted(load)
 </script>
 
 <style scoped>
+.admin-page {
+  animation: pageReveal var(--duration-slow) var(--ease-out-expo) both;
+}
 .pager {
-  margin-top: 16px;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
 }
 </style>

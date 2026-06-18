@@ -1,17 +1,46 @@
 <template>
-  <div class="page auth">
-    <el-card>
-      <h2>学号注册</h2>
-      <el-form ref="formRef" :model="form" :rules="rules" label-width="80px">
-        <el-form-item label="学号" prop="studentNo"><el-input v-model="form.studentNo" /></el-form-item>
-        <el-form-item label="昵称" prop="username"><el-input v-model="form.username" /></el-form-item>
-        <el-form-item label="密码" prop="password"><el-input v-model="form.password" type="password" show-password /></el-form-item>
-        <el-form-item label="手机"><el-input v-model="form.phone" /></el-form-item>
-        <el-form-item label="邮箱"><el-input v-model="form.email" /></el-form-item>
-        <el-button type="primary" @click="submit">注册并登录</el-button>
-        <el-button link @click="$router.push('/login')">已有账号</el-button>
-      </el-form>
-    </el-card>
+  <div class="auth-page">
+    <div class="auth-visual">
+      <div class="auth-visual-content">
+        <img src="../../assets/images/brand-mark.png" alt="" class="brand-mark" />
+        <div class="deco-line"></div>
+        <h1>加入<br /><em>HIT</em></h1>
+        <p>注册成为会员，开启您的校园闲置交易之旅。</p>
+      </div>
+    </div>
+    <div class="auth-form-panel">
+      <div class="auth-card card">
+        <h2>学号注册</h2>
+        <p class="auth-hint">填写信息，即刻开启优雅交易体验</p>
+        <el-form ref="formRef" :model="form" :rules="rules" label-width="80px" label-position="top">
+          <el-form-item label="学号" prop="studentNo">
+            <el-input v-model="form.studentNo" placeholder="请输入学号" />
+          </el-form-item>
+          <el-form-item label="昵称" prop="username">
+            <el-input v-model="form.username" placeholder="您的昵称" />
+          </el-form-item>
+          <el-form-item label="密码" prop="password">
+            <el-input v-model="form.password" type="password" show-password placeholder="至少6位" />
+          </el-form-item>
+          <el-row :gutter="16">
+            <el-col :span="12">
+              <el-form-item label="手机">
+                <el-input v-model="form.phone" placeholder="选填" />
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="邮箱">
+                <el-input v-model="form.email" placeholder="选填" />
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <div class="form-actions">
+            <el-button type="primary" size="large" @click="submit">注册并登录</el-button>
+            <el-button link @click="$router.push('/login')">已有账号 →</el-button>
+          </div>
+        </el-form>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -40,7 +69,12 @@ async function submit() {
 </script>
 
 <style scoped>
-.auth {
-  max-width: 520px;
+.auth-card {
+  max-width: 480px;
+}
+
+:deep(.el-form-item__label) {
+  font-weight: 500;
+  color: var(--color-text-soft);
 }
 </style>

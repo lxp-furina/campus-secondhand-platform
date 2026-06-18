@@ -1,22 +1,34 @@
 <template>
   <div class="page">
-    <el-card>
+    <div class="page-header">
       <h2>我的收藏</h2>
-      <div class="grid" v-if="items.length">
-        <el-card v-for="v in items" :key="v.item.id" class="item-card">
+      <p class="page-subtitle">您心仪的物品，随时查看</p>
+    </div>
+
+    <div class="grid" v-if="items.length">
+      <el-card v-for="v in items" :key="v.item.id" class="item-card">
+        <div class="cover-wrap">
           <img :src="v.images?.[0]?.imageUrl || placeholder" class="cover" @click="goDetail(v.item.id)" />
-          <h3 @click="goDetail(v.item.id)">{{ v.item.title }}</h3>
-          <p class="muted">{{ v.category?.name }} · {{ v.item.conditionLevel }}</p>
-          <p class="price">￥{{ v.item.price }}</p>
-          <p class="muted">状态：{{ statusText(v.item.status) }}</p>
-          <div class="actions">
-            <el-button size="small" type="primary" @click="goDetail(v.item.id)">查看详情</el-button>
-            <el-button size="small" @click="remove(v.item.id)">取消收藏</el-button>
-          </div>
-        </el-card>
-      </div>
-      <el-empty v-else description="还没有收藏任何物品" />
-    </el-card>
+        </div>
+        <h3 @click="goDetail(v.item.id)">{{ v.item.title }}</h3>
+        <div class="item-meta">
+          <span class="tag-pill">{{ v.category?.name }}</span>
+          <span class="tag-pill condition">{{ v.item.conditionLevel }}</span>
+        </div>
+        <p class="price">{{ v.item.price }}</p>
+        <p class="muted status-line">状态：{{ statusText(v.item.status) }}</p>
+        <div class="actions">
+          <el-button size="small" type="primary" @click="goDetail(v.item.id)">查看详情</el-button>
+          <el-button size="small" @click="remove(v.item.id)">取消收藏</el-button>
+        </div>
+      </el-card>
+    </div>
+
+    <div class="empty-wrap" v-else>
+      <el-empty description="还没有收藏任何物品">
+        <el-button type="primary" @click="$router.push('/')">去发现好物</el-button>
+      </el-empty>
+    </div>
   </div>
 </template>
 
@@ -27,7 +39,7 @@ import { ElMessage } from 'element-plus'
 import { getMyFavorites, unfavoriteItem } from '../../api/item'
 
 const router = useRouter()
-const placeholder = 'https://dummyimage.com/600x400/e5e7eb/6b7280&text=Campus'
+const placeholder = 'https://dummyimage.com/600x400/ede6d8/6b7c72&text=Campus+Atelier'
 const items = ref([])
 
 const statusMap = {
@@ -58,29 +70,45 @@ onMounted(load)
 </script>
 
 <style scoped>
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 18px;
-  margin-top: 16px;
-}
-.cover {
-  width: 100%;
-  height: 170px;
-  object-fit: cover;
-  border-radius: 8px;
-  cursor: pointer;
-}
 .item-card h3 {
   cursor: pointer;
 }
-.price {
-  color: #e11d48;
-  font-weight: 700;
+
+.tag-pill {
+  display: inline-flex;
+  padding: 2px 10px;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  background: rgba(30, 82, 64, 0.08);
+  color: var(--color-emerald);
+  border: 1px solid rgba(30, 82, 64, 0.12);
 }
+
+.tag-pill.condition {
+  background: rgba(184, 149, 106, 0.1);
+  color: var(--color-gold);
+  border-color: rgba(184, 149, 106, 0.2);
+}
+
+.item-meta {
+  display: flex;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.status-line {
+  margin: 8px 0;
+}
+
 .actions {
   display: flex;
   gap: 8px;
-  margin-top: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-gold);
+}
+
+.empty-wrap {
+  padding: 48px 0;
 }
 </style>
