@@ -19,9 +19,6 @@
           <el-col :span="12">
             <el-form-item label="邮箱"><el-input v-model="profile.email" /></el-form-item>
           </el-col>
-          <el-col :span="24">
-            <el-form-item label="头像 URL"><el-input v-model="profile.avatar" placeholder="输入头像图片地址" /></el-form-item>
-          </el-col>
         </el-row>
         <el-button type="primary" @click="saveProfile">保存资料</el-button>
       </el-form>
@@ -53,7 +50,7 @@ import { useAuthStore } from '../../store/auth'
 
 const auth = useAuthStore()
 const pwdRef = ref()
-const profile = reactive({ studentNo: '', username: '', phone: '', email: '', avatar: '' })
+const profile = reactive({ studentNo: '', username: '', phone: '', email: '' })
 const password = reactive({ oldPassword: '', newPassword: '' })
 const rules = {
   oldPassword: [{ required: true, message: '请输入旧密码', trigger: 'blur' }],

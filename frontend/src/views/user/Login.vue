@@ -39,18 +39,20 @@ import { useAuthStore } from '../../store/auth'
 import PageScene from '../../components/PageScene.vue'
 
 const formRef = ref()
-const form = reactive({ account: '', password: '' })
+const auth = useAuthStore()
+const saved = auth.loadCredentials('USER')
+const form = reactive({ account: saved.account, password: saved.password })
 const rules = {
   account: [{ required: true, message: '请输入账号', trigger: 'blur' }],
   password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
 }
 const router = useRouter()
-const auth = useAuthStore()
 
 async function submit() {
   await formRef.value.validate()
   const data = await login(form)
   auth.setSession(data)
+  auth.saveCredentials(form.account, form.password, 'USER')
   router.push('/')
 }
 </script>

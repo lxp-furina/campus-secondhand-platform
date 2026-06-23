@@ -18,7 +18,11 @@
             <span class="price-sm">{{ row.order.amount }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="状态" prop="order.status" width="100" />
+        <el-table-column label="状态" width="120">
+          <template #default="{ row }">
+            <el-tag :type="statusType(row.order.status)" effect="plain">{{ statusText(row.order.status) }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="买家" prop="buyer.username" width="100" />
         <el-table-column label="卖家" prop="seller.username" width="100" />
         <el-table-column label="操作" width="250">
@@ -39,6 +43,28 @@ import { getBuyerOrders, getSellerOrders, updateOrderStatus } from '../../api/or
 
 const tab = ref('buyer')
 const orders = ref([])
+
+const statusMap = {
+  PENDING: '待确认',
+  PROCESSING: '进行中',
+  COMPLETED: '已完成',
+  CANCELLED: '已取消'
+}
+
+const statusTypeMap = {
+  PENDING: 'warning',
+  PROCESSING: '',
+  COMPLETED: 'success',
+  CANCELLED: 'info'
+}
+
+function statusText(status) {
+  return statusMap[status] || status
+}
+
+function statusType(status) {
+  return statusTypeMap[status] || 'info'
+}
 
 async function load() {
   orders.value = tab.value === 'buyer' ? await getBuyerOrders() : await getSellerOrders()

@@ -37,17 +37,22 @@ import { useAuthStore } from '../../store/auth'
 import PageScene from '../../components/PageScene.vue'
 
 const formRef = ref()
-const form = reactive({ account: 'admin', password: 'admin123' })
+const auth = useAuthStore()
+const saved = auth.loadCredentials('ADMIN')
+const form = reactive({
+  account: saved.account || 'admin',
+  password: saved.password || 'admin123'
+})
 const rules = {
   account: [{ required: true, message: '请输入账号', trigger: 'blur' }],
   password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
 }
 const router = useRouter()
-const auth = useAuthStore()
 
 async function submit() {
   await formRef.value.validate()
   auth.setSession(await adminLogin(form))
+  auth.saveCredentials(form.account, form.password, 'ADMIN')
   router.push('/admin/dashboard')
 }
 </script>
