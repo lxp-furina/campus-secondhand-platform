@@ -51,6 +51,7 @@ public class JwtInterceptor implements HandlerInterceptor {
 
     private boolean isPublicPath(String path) {
         return path.startsWith("/uploads/")
+                || path.startsWith("/api/public/")
                 || "/api/auth/register".equals(path)
                 || "/api/auth/login".equals(path)
                 || "/api/auth/admin/login".equals(path);

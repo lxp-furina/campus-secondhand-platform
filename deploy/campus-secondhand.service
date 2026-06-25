@@ -1,0 +1,30 @@
+# Linux systemd 服务
+# 1. 修改下方路径与环境变量
+# 2. sudo cp deploy/campus-secondhand.service /etc/systemd/system/
+# 3. sudo systemctl daemon-reload
+# 4. sudo systemctl enable --now campus-secondhand
+
+[Unit]
+Description=Campus Secondhand Backend
+After=network.target mysql.service
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/opt/campus-secondhand
+Environment=SPRING_PROFILES_ACTIVE=prod
+Environment=DB_HOST=127.0.0.1
+Environment=DB_PORT=3306
+Environment=DB_NAME=campus_secondhand
+Environment=DB_USERNAME=root
+Environment=DB_PASSWORD=123456
+Environment=JWT_SECRET=please-change-this-jwt-secret-in-production
+Environment=UPLOAD_PATH=/var/www/campus-secondhand/uploads
+Environment=CORS_ALLOWED_ORIGINS=*
+Environment=DASHSCOPE_API_KEY=
+ExecStart=/usr/bin/java -jar /opt/campus-secondhand/secondhand-1.0.0.jar
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

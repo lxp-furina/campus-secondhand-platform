@@ -69,6 +69,11 @@ web_modules/
 .env
 .env.*
 !.env.example
+!.env.production
+
+# Deploy build output
+deploy/artifacts/
+deploy/nginx/generated-windows.conf
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
